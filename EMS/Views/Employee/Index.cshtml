@@ -1,0 +1,1024 @@
+﻿@*@{
+        ViewBag.Title = "Index";
+    }
+
+    <h2>Employee Management System</h2>
+
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td><input type="text" id="txtName" /></td>
+        </tr>
+
+        <tr>
+            <td>Gender:</td>
+            <td><input type="text" id="txtGender" /></td>
+        </tr>
+
+        <tr>
+            <td>Age:</td>
+            <td><input type="text" id="txtAge" /></td>
+        </tr>
+
+        <tr>
+            <td>Salary:</td>
+            <td><input type="text" id="txtSalary" /></td>
+        </tr>
+
+        <tr>
+            <td>City:</td>
+            <td><input type="text" id="txtCity" /></td>
+        </tr>
+
+        <tr>
+            <td>Location:</td>
+            <td><input type="text" id="txtLocation" /></td>
+        </tr>
+
+
+        <tr>
+            <td></td>
+            <td>
+                <input type="hidden" id="txtId" />
+                <button id="btnSave">Save</button>
+                <button id="btnUpdate" style="display:none;">Update</button>
+            </td>
+        </tr>
+    </table>
+
+    <hr />
+
+    <h3>Employee List</h3>
+
+    <table border="1" cellpadding="10" id="tblEmployees">
+        <thead>
+            <tr>
+                <th>EmpId</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Salary</th>
+                <th>City</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody id="tbody1">
+        </tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
+
+
+
+@*<script>
+        $(document).ready(function () {
+            LoadEmployees();
+
+            //Insert
+            $("#btnSave").click(function () {
+                var obj = {
+                    Name: $("#txtName").val(),
+                    Gender: $("#txtGender").val(),
+                    Age: $("#txtAge").val(),
+                    Salary: $("#txtSalary").val(),
+                    City: $("#txtCity").val(),
+                    Location: $("#txtLocation").val()
+                };
+
+                $.ajax({
+                    url:"/Employee/InsertEmployee",
+                    type: "POST",
+                    data: obj,
+                    success: function (result) {
+                        if (result == true) {
+                            alert("Employee Addded SuccessFully ");
+                            ClearData();
+                            LoadEmployees();
+                        }
+                        else {
+                            alert("Insert Failed");
+                        }
+                    }
+                });
+            });
+        });
+
+
+        //Update
+
+        $("#btnUpdate").click(function () {
+            var obj = {
+                Id: $("txtId").val(),
+                Name: $("#txtName").val(),
+                Gender: $("#txtGender").val(),
+                Age: $("#txtAge").val(),
+                Salary: $("#txtSalary").val(),
+                City: $("#txtCity").val(),
+                Location: $("#txtLocation").val()
+            };
+
+            $.ajax({
+                url: "/Employee/UpdateEmployee",
+                type: "POST",
+                data: obj,
+                success: function (result) {
+                    if (result == true) {
+                        alert("Employee Updated SuccesFully");
+                        ClearData();
+                        LoadEmployees();
+
+                        $("#btnSave").show();
+                        $("#btnUpdate").hide();
+                    }
+                    else {
+                        alert("Updated Failed");
+                    }
+                }
+
+            });
+        });
+
+        //Read
+
+        function LoadEmployees() {
+            $.ajax({
+                url:"/Employee/GetEmployee",
+                type: "GET",
+                success: function (data) {
+                    var rows = "";
+
+                    $.each(data, function (i, item) {
+                        rows += "<tr>"
+                            + "<td>" + item.Name + "</td>"
+                            + "<td>" + item.Gender + "</td>"
+                            + "<td>" + item.Age + "</td>"
+                            + "<td>" + item.Salary + "</td>"
+                            + "<td>" + item.City + "</td>"
+                            + "<td>" + item.Location + "</td>"
+                            + "</td>"
+                            + "<button onclick='EditEmployee(" + item.Id + ")'>Edit</button> "
+                            + "<button onclick='DeleteEmployee(" + item.Id + ")'>Delete</button>"
+                            + "</td>"
+                            + "</tr>";
+
+                    });
+                    $("#tblEmployees tbody").html(rows);
+
+
+                }
+            });
+        }
+
+        //Edit
+
+        function EditEmployee(id) {
+            $.ajax({
+                url: "/Employee/GetEmployeeById?id=" + id,
+                type: "GET",
+                success: function (data) {
+                    $("#txtId").val(data.Id);
+                    $("#txtName").val(data.Name);
+                    $("#txtGender").val(data.Gender);
+                    $("#txtSalary").val(data.Salary);
+                    $("#txtCity").val(data.City);
+                    $("#txtLocation").val(data.Location);
+
+                    $("#btnSave").hide();
+                    $("#btnUpdate").show();
+                }
+            })
+        }
+
+        //Delete
+
+        function DeleteEmployee(id) {
+            if (confirm("Are you sure want to delete this Employee?")) {
+                $.ajax({
+                    url: "/Employee/DeleteEmployee",
+                    type: "POST",
+                    data: { id: id },
+                    success: function (result) {
+                        if (result == true) {
+                            alert("Employee Deleted SuccessFully");
+                            LoadEmployees();
+                        }
+                        else {
+                            alert("Delete Failed");
+                        }
+                    }
+                });
+            }
+        }
+
+        //ClearData
+
+        function ClearData() {
+            $("txtId").val("");
+            $("txtName").val("");
+            $("txtGender").val("");
+            $("txtSalary").val("");
+            $("txtCity").val("");
+            $("txtLocation").val("");
+        }
+
+
+    </script>*@
+
+
+
+@{
+    ViewBag.Title = "Employee CRUD";
+}
+
+@*<h2>Employee Management System (ADO.NET + AJAX)</h2>
+
+<table>
+    <tr>
+        <td>Name:</td>
+        <td><input type="text" id="txtName" /></td>
+    </tr>
+
+    <tr>
+        <td>Gender:</td>
+        <td><input type="text" id="txtGender" /></td>
+    </tr>
+
+    <tr>
+        <td>Age:</td>
+        <td><input type="text" id="txtAge" /></td>
+    </tr>
+
+    <tr>
+        <td>Salary:</td>
+        <td><input type="text" id="txtSalary" /></td>
+    </tr>
+
+    <tr>
+        <td>City:</td>
+        <td><input type="text" id="txtCity" /></td>
+    </tr>
+
+    <tr>
+        <td>Location:</td>
+        <td><input type="text" id="txtLocation" /></td>
+    </tr>
+
+    <tr>
+        <td></td>
+        <td>
+            <input type="hidden" id="txtId" />
+            <button id="btnSave">Save</button>
+            <button id="btnUpdate" style="display:none;">Update</button>
+        </td>
+    </tr>
+</table>
+
+<hr />
+
+<h3>Employee List</h3>
+
+<table border="1" cellpadding="10" id="tblEmployees">
+    <thead>
+        <tr>
+            <th>EmpId</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Age</th>
+            <th>Salary</th>
+            <th>City</th>
+            <th>Location</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="tbody1">
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
+
+@*<script>
+        $(document).ready(function () {
+
+            LoadEmployees();
+
+            // INSERT
+            $("#btnSave").click(function () {
+
+                var obj = {
+                    Name: $("#txtName").val(),
+                    Gender: $("#txtGender").val(),
+                    Age: $("#txtAge").val(),
+                    Salary: $("#txtSalary").val(),
+                    City: $("#txtCity").val(),
+                    Location: $("#txtLocation").val()
+                };
+
+                $.ajax({
+                    url: "/Employee/InsertEmployee",
+                    type: "POST",
+                    data: obj,
+                    success: function (result) {
+                        if (result == true) {
+                            alert("Employee Added Successfully");
+                            ClearData();
+                            LoadEmployees();
+                        }
+                        else {
+                            alert("Insert Failed");
+                        }
+                    }
+                });
+            });
+
+            // UPDATE
+            $("#btnUpdate").click(function () {
+
+                var obj = {
+                    Id: $("#txtId").val(),
+                    Name: $("#txtName").val(),
+                    Gender: $("#txtGender").val(),
+                    Age: $("#txtAge").val(),
+                    Salary: $("#txtSalary").val(),
+                    City: $("#txtCity").val(),
+                    Location: $("#txtLocation").val()
+                };
+
+                $.ajax({
+                    url: "/Employee/UpdateEmployee",
+                    type: "POST",
+                    data: obj,
+                    success: function (result) {
+                        if (result == true) {
+                            alert("Employee Updated Successfully");
+                            ClearData();
+                            LoadEmployees();
+
+                            $("#btnSave").show();
+                            $("#btnUpdate").hide();
+                        }
+                        else {
+                            alert("Update Failed");
+                        }
+                    }
+                });
+            });
+
+        });
+
+        // READ ALL
+        function LoadEmployees() {
+            $.ajax({
+                url: "/Employee/GetEmployees",
+                type: "GET",
+                success: function (data) {
+
+                    var rows = "";
+
+                    $.each(data, function (i, item) {
+
+                        rows += "<tr>"
+                            + "<td>" + item.Id + "</td>"
+                            + "<td>" + item.Name + "</td>"
+                            + "<td>" + item.Gender + "</td>"
+                            + "<td>" + item.Age + "</td>"
+                            + "<td>" + item.Salary + "</td>"
+                            + "<td>" + item.City + "</td>"
+                            + "<td>" + item.Location + "</td>"
+                            + "<td>"
+                            + "<button onclick='EditEmployee(" + item.Id + ")'>Edit</button> "
+                            + "<button onclick='DeleteEmployee(" + item.Id + ")'>Delete</button>"
+                            + "</td>"
+                            + "</tr>";
+                    });
+
+                    $("#tbody1").html(rows);
+                }
+            });
+        }
+
+        // EDIT
+        function EditEmployee(id) {
+            $.ajax({
+                url: "/Employee/GetEmployeeById?id=" + id,
+                type: "GET",
+                success: function (data) {
+
+                    $("#txtId").val(data.Id);
+                    $("#txtName").val(data.Name);
+                    $("#txtGender").val(data.Gender);
+                    $("#txtAge").val(data.Age);
+                    $("#txtSalary").val(data.Salary);
+                    $("#txtCity").val(data.City);
+                    $("#txtLocation").val(data.Location);
+
+                    $("#btnSave").hide();
+                    $("#btnUpdate").show();
+                }
+            });
+        }
+
+        // DELETE
+        function DeleteEmployee(id) {
+
+            if (confirm("Are you sure want to delete this employee?")) {
+
+                $.ajax({
+                    url: "/Employee/DeleteEmployee",
+                    type: "POST",
+                    data: { id: id },
+                    success: function (result) {
+
+                        if (result == true) {
+                            alert("Employee Deleted Successfully");
+                            LoadEmployees();
+                        }
+                        else {
+                            alert("Delete Failed");
+                        }
+                    }
+                });
+            }
+        }
+
+        // CLEAR
+        function ClearData() {
+            $("#txtId").val("");
+            $("#txtName").val("");
+            $("#txtGender").val("");
+            $("#txtAge").val("");
+            $("#txtSalary").val("");
+            $("#txtCity").val("");
+            $("#txtLocation").val("");
+
+            $("#btnSave").show();
+            $("#btnUpdate").hide();
+        }
+    </script>*@
+
+
+@{
+    ViewBag.Title = "Employee CRUD";
+}
+
+<!-- ✅ PROFESSIONAL 3D CSS STYLES -->
+<style>
+    /* ===== GLOBAL 3D THEME ===== */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        color: #fff;
+    }
+
+    /* ===== 3D CONTAINER CARD ===== */
+    .container-3d {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: linear-gradient(145deg, #1e2a4a, #151f33);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow:
+            0 25px 50px -12px rgba(0, 0, 0, 0.75),
+            0 0 0 1px rgba(255, 255, 255, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        border: 3px solid #3a5a80;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .container-3d::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #00d4ff, #7b2cbf, #ff006e);
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+    }
+
+    /* ===== 3D HEADINGS ===== */
+    h2, h3 {
+        text-align: center;
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        margin-bottom: 25px;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    h2 {
+        font-size: 28px;
+        color: #00d4ff;
+        letter-spacing: 1px;
+    }
+
+    h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+        border-radius: 2px;
+    }
+
+    h3 {
+        font-size: 22px;
+        color: #e0e0ff;
+        margin-top: 30px;
+    }
+
+    /* ===== 3D FORM TABLE ===== */
+    table.input-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 12px;
+        margin-bottom: 25px;
+    }
+
+    table.input-table td {
+        padding: 8px 15px;
+        vertical-align: middle;
+    }
+
+    table.input-table td:first-child {
+        width: 120px;
+        font-weight: 600;
+        color: #a0d2ff;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    /* ===== 3D INPUT FIELDS ===== */
+    input[type="text"],
+    input[type="hidden"] {
+        width: 100%;
+        padding: 12px 18px;
+        border: 3px solid #3a5a80;
+        border-radius: 10px;
+        background: linear-gradient(145deg, #1a2340, #121a2e);
+        color: #fff;
+        font-size: 15px;
+        box-shadow:
+            inset 0 2px 4px rgba(0, 0, 0, 0.4),
+            0 4px 8px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    input[type="text"]:focus {
+        outline: none;
+        border-color: #00d4ff;
+        box-shadow:
+            inset 0 2px 4px rgba(0, 0, 0, 0.4),
+            0 0 0 3px rgba(0, 212, 255, 0.3),
+            0 8px 20px rgba(0, 212, 255, 0.2);
+        transform: translateY(-2px);
+    }
+
+    input[type="text"]::placeholder {
+        color: #6b7a99;
+    }
+
+    /* ===== 3D BUTTONS ===== */
+    button {
+        padding: 12px 30px;
+        margin: 5px;
+        border: none;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Save Button - Green 3D */
+    #btnSave {
+        background: linear-gradient(145deg, #00c853, #009624);
+        color: white;
+        box-shadow:
+            0 6px 0 #007a1c,
+            0 10px 20px rgba(0, 200, 83, 0.4),
+            inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+
+    #btnSave:hover {
+        transform: translateY(-2px);
+        box-shadow:
+            0 8px 0 #007a1c,
+            0 15px 30px rgba(0, 200, 83, 0.6),
+            inset 0 1px 0 rgba(255,255,255,0.4);
+    }
+
+    #btnSave:active {
+        transform: translateY(4px);
+        box-shadow:
+            0 2px 0 #007a1c,
+            0 4px 10px rgba(0, 200, 83, 0.4),
+            inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+
+    /* Update Button - Blue 3D */
+    #btnUpdate {
+        background: linear-gradient(145deg, #2979ff, #1565c0);
+        color: white;
+        box-shadow:
+            0 6px 0 #0d47a1,
+            0 10px 20px rgba(41, 121, 255, 0.4),
+            inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+
+    #btnUpdate:hover {
+        transform: translateY(-2px);
+        box-shadow:
+            0 8px 0 #0d47a1,
+            0 15px 30px rgba(41, 121, 255, 0.6),
+            inset 0 1px 0 rgba(255,255,255,0.4);
+    }
+
+    #btnUpdate:active {
+        transform: translateY(4px);
+        box-shadow:
+            0 2px 0 #0d47a1,
+            0 4px 10px rgba(41, 121, 255, 0.4),
+            inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+
+    /* ===== HARD BORDER 3D TABLE ===== */
+    #tblEmployees {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        background: linear-gradient(145deg, #1a2340, #121a2e);
+        border: 4px solid #3a5a80;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow:
+            0 20px 40px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1),
+            0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    /* Table Header - Hard 3D */
+    #tblEmployees thead {
+        background: linear-gradient(145deg, #2a3a5a, #1e2a4a);
+        border-bottom: 4px solid #00d4ff;
+    }
+
+    #tblEmployees th {
+        padding: 18px 12px;
+        font-weight: 700;
+        color: #00d4ff;
+        text-transform: uppercase;
+        font-size: 13px;
+        letter-spacing: 0.8px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        border-right: 3px solid #3a5a80;
+        border-bottom: 3px solid #3a5a80;
+        background: linear-gradient(180deg, #344a6a, #2a3a5a);
+        box-shadow: inset 0 -2px 0 rgba(0,0,0,0.3);
+    }
+
+    #tblEmployees th:last-child {
+        border-right: none;
+    }
+
+    /* Table Body Rows - Hard Borders */
+    #tblEmployees tbody tr {
+        border-bottom: 3px solid #3a5a80;
+        transition: all 0.2s ease;
+    }
+
+    #tblEmployees tbody tr:hover {
+        background: linear-gradient(145deg, #233055, #1e2a4a);
+        transform: scale(1.01);
+        box-shadow: inset 0 0 0 2px rgba(0, 212, 255, 0.3);
+    }
+
+    #tblEmployees tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    #tblEmployees td {
+        padding: 14px 12px;
+        text-align: center;
+        color: #e0e6ff;
+        border-right: 3px solid #3a5a80;
+        font-size: 14px;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    #tblEmployees td:last-child {
+        border-right: none;
+    }
+
+    /* Action Buttons in Table - Compact 3D */
+    #tblEmployees button {
+        padding: 8px 16px;
+        margin: 3px;
+        font-size: 12px;
+        border-radius: 8px;
+        min-width: 70px;
+    }
+
+    #tblEmployees button:first-of-type {
+        background: linear-gradient(145deg, #ffab00, #c97a00);
+        box-shadow:
+            0 4px 0 #995d00,
+            0 6px 12px rgba(255, 171, 0, 0.3);
+    }
+
+    #tblEmployees button:first-of-type:hover {
+        transform: translateY(-1px);
+        box-shadow:
+            0 5px 0 #995d00,
+            0 8px 16px rgba(255, 171, 0, 0.5);
+    }
+
+    #tblEmployees button:last-of-type {
+        background: linear-gradient(145deg, #ff1744, #c5002a);
+        box-shadow:
+            0 4px 0 #96001f,
+            0 6px 12px rgba(255, 23, 68, 0.3);
+    }
+
+    #tblEmployees button:last-of-type:hover {
+        transform: translateY(-1px);
+        box-shadow:
+            0 5px 0 #96001f,
+            0 8px 16px rgba(255, 23, 68, 0.5);
+    }
+
+    /* ===== HR STYLING ===== */
+    hr {
+        border: none;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #3a5a80, transparent);
+        margin: 25px 0;
+        border-radius: 2px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* ===== RESPONSIVE ===== */
+  
+
+    /* ===== ANIMATIONS ===== */
+   
+    .container-3d {
+        animation: pulse 3s infinite;
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #1a2340;
+        border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(145deg, #3a5a80, #2a4a6a);
+        border-radius: 5px;
+        border: 2px solid #1a2340;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(145deg, #4a6a90, #3a5a7a);
+    }
+</style>
+
+<!-- ===== MAIN CONTAINER ===== -->
+<div class="container-3d">
+
+    <h2>🚀 Employee Management System</h2>
+
+    <!-- Input Form Table -->
+    <table class="input-table">
+        <tr>
+            <td>Name:</td>
+            <td><input type="text" id="txtName" placeholder="Enter employee name" /></td>
+        </tr>
+        <tr>
+            <td>Gender:</td>
+            <td><input type="text" id="txtGender" placeholder="Enter gender" /></td>
+        </tr>
+        <tr>
+            <td>Age:</td>
+            <td><input type="text" id="txtAge" placeholder="Enter age" /></td>
+        </tr>
+        <tr>
+            <td>Salary:</td>
+            <td><input type="text" id="txtSalary" placeholder="Enter salary" /></td>
+        </tr>
+        <tr>
+            <td>City:</td>
+            <td><input type="text" id="txtCity" placeholder="Enter city" /></td>
+        </tr>
+        <tr>
+            <td>Location:</td>
+            <td><input type="text" id="txtLocation" placeholder="Enter location" /></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="hidden" id="txtId" />
+                <button id="btnSave">💾 Save</button>
+                <button id="btnUpdate" style="display:none;">✏️ Update</button>
+                <button onclick="ClearData()" style="background:linear-gradient(145deg,#607d8b,#455a64);color:white;box-shadow:0 4px 0 #37474f,0 6px 12px rgba(96,125,139,0.3);">🔄 Clear</button>
+            </td>
+        </tr>
+    </table>
+
+    <hr />
+
+    <h3>📋 Employee List</h3>
+
+    <!-- Data Table with HARD BORDERS -->
+    <table border="1" cellpadding="10" id="tblEmployees">
+        <thead>
+            <tr>
+                <th>EmpId</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Salary</th>
+                <th>City</th>
+                <th>Location</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="tbody1">
+            <!-- Data loads here via AJAX -->
+        </tbody>
+    </table>
+
+</div>
+
+<!-- jQuery (REQUIRED - DO NOT CHANGE) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- ✅ YOUR ORIGINAL JQUERY/AJAX CODE - UNCHANGED -->
+<script>
+    $(document).ready(function () {
+
+        LoadEmployees();
+
+        // INSERT
+        $("#btnSave").click(function () {
+
+            var obj = {
+                Name: $("#txtName").val(),
+                Gender: $("#txtGender").val(),
+                Age: $("#txtAge").val(),
+                Salary: $("#txtSalary").val(),
+                City: $("#txtCity").val(),
+                Location: $("#txtLocation").val()
+            };
+
+            $.ajax({
+                url: "/Employee/InsertEmployee",
+                type: "POST",
+                data: obj,
+                success: function (result) {
+                    if (result == true) {
+                        alert("Employee Added Successfully");
+                        ClearData();
+                        LoadEmployees();
+                    }
+                    else {
+                        alert("Insert Failed");
+                    }
+                }
+            });
+        });
+
+        // UPDATE
+        $("#btnUpdate").click(function () {
+
+            var obj = {
+                Id: $("#txtId").val(),
+                Name: $("#txtName").val(),
+                Gender: $("#txtGender").val(),
+                Age: $("#txtAge").val(),
+                Salary: $("#txtSalary").val(),
+                City: $("#txtCity").val(),
+                Location: $("#txtLocation").val()
+            };
+
+            $.ajax({
+                url: "/Employee/UpdateEmployee",
+                type: "POST",
+                data: obj,
+                success: function (result) {
+                    if (result == true) {
+                        alert("Employee Updated Successfully");
+                        ClearData();
+                        LoadEmployees();
+
+                        $("#btnSave").show();
+                        $("#btnUpdate").hide();
+                    }
+                    else {
+                        alert("Update Failed");
+                    }
+                }
+            });
+        });
+
+    });
+
+    // READ ALL
+    function LoadEmployees() {
+        $.ajax({
+            url: "/Employee/GetEmployees",
+            type: "GET",
+            success: function (data) {
+
+                var rows = "";
+
+                $.each(data, function (i, item) {
+
+                    rows += "<tr>"
+                        + "<td>" + item.Id + "</td>"
+                        + "<td>" + item.Name + "</td>"
+                        + "<td>" + item.Gender + "</td>"
+                        + "<td>" + item.Age + "</td>"
+                        + "<td>" + item.Salary + "</td>"
+                        + "<td>" + item.City + "</td>"
+                        + "<td>" + item.Location + "</td>"
+                        + "<td>"
+                        + "<button onclick='EditEmployee(" + item.Id + ")'>Edit</button> "
+                        + "<button onclick='DeleteEmployee(" + item.Id + ")'>Delete</button>"
+                        + "</td>"
+                        + "</tr>";
+                });
+
+                $("#tbody1").html(rows);
+            }
+        });
+    }
+
+    // EDIT
+    function EditEmployee(id) {
+        $.ajax({
+            url: "/Employee/GetEmployeeById?id=" + id,
+            type: "GET",
+            success: function (data) {
+
+                $("#txtId").val(data.Id);
+                $("#txtName").val(data.Name);
+                $("#txtGender").val(data.Gender);
+                $("#txtAge").val(data.Age);
+                $("#txtSalary").val(data.Salary);
+                $("#txtCity").val(data.City);
+                $("#txtLocation").val(data.Location);
+
+                $("#btnSave").hide();
+                $("#btnUpdate").show();
+            }
+        });
+    }
+
+    // DELETE
+    function DeleteEmployee(id) {
+
+        if (confirm("Are you sure want to delete this employee?")) {
+
+            $.ajax({
+                url: "/Employee/DeleteEmployee",
+                type: "POST",
+                data: { id: id },
+                success: function (result) {
+
+                    if (result == true) {
+                        alert("Employee Deleted Successfully");
+                        LoadEmployees();
+                    }
+                    else {
+                        alert("Delete Failed");
+                    }
+                }
+            });
+        }
+    }
+
+    // CLEAR
+    function ClearData() {
+        $("#txtId").val("");
+        $("#txtName").val("");
+        $("#txtGender").val("");
+        $("#txtAge").val("");
+        $("#txtSalary").val("");
+        $("#txtCity").val("");
+        $("#txtLocation").val("");
+
+        $("#btnSave").show();
+        $("#btnUpdate").hide();
+    }
+</script>
